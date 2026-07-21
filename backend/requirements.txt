@@ -1,0 +1,7 @@
+pipecat-ai[deepgram,cartesia,groq,silero,webrtc]==1.5.0
+qdrant-client>=1.9
+model2vec>=0.4
+pypdf>=4.2
+python-dotenv>=1.0
+fastapi>=0.111
+uvicorn[standard]>=0.30
