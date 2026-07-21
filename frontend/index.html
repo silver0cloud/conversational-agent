@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Pride & Prejudice — Voice Companion</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="scene">
+    <div class="status" id="status">Tap the mic to start</div>
+
+    <div class="orb-wrap">
+      <canvas id="orb" width="600" height="600"></canvas>
+      <button id="mic-btn" class="mic-btn" aria-label="Start conversation">
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="none">
+          <path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z" fill="currentColor"/>
+          <path d="M19 11a7 7 0 0 1-14 0M12 19v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <canvas id="waveform" class="waveform hidden" width="900" height="120"></canvas>
+
+    <div class="hint" id="hint">Ask about characters, plot, quotes — or just say hi.</div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
