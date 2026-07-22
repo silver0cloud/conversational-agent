@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Your Profile — Pride & Prejudice Companion</title>
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="profile.css" />
+</head>
+<body class="profile-body">
+  <div class="profile-page">
+    <header class="profile-header">
+      <a href="/" class="back-link">&larr; Back to conversation</a>
+      <h1>Your Profile</h1>
+    </header>
+
+    <section class="card" id="interest-profile-card">
+      <h2>Interest Profile</h2>
+      <div id="tags-container" class="tags-container"></div>
+      <p id="notes-text" class="notes-text"></p>
+      <p id="profile-empty" class="empty-state hidden">
+        Have a conversation and I'll start learning your interests here.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Past Conversations</h2>
+      <div id="conversations-list" class="conversations-list"></div>
+      <p id="conversations-empty" class="empty-state hidden">
+        No conversations yet — go tap the orb and have a chat.
+      </p>
+    </section>
+  </div>
+
+  <div id="toast" class="toast hidden">Copied to clipboard</div>
+
+  <script src="profile.js"></script>
+</body>
+</html>
