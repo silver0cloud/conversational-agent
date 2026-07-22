@@ -5,7 +5,10 @@ Entry point.
 
 Serves:
   - the frontend (orb UI) at /
+  - the profile dashboard at /profile
   - POST /api/offer  -> WebRTC signaling (SmallWebRTC, no Daily.co, no cost)
+  - GET  /api/profile, /api/conversations, /api/conversations/{id},
+    /api/conversations/{id}/draft.md -> dashboard data (see routes_profile.py)
 
 Each browser tab that hits "start call" gets its own SmallWebRTCConnection
 and its own Pipecat pipeline instance (STT -> router -> LLM -> TTS).
@@ -16,6 +19,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from loguru import logger
 
@@ -26,9 +30,10 @@ from pipecat.transports.smallwebrtc.request_handler import (
 
 from backend.config import settings
 from backend.pipeline import build_pipeline
-from backend import db, postprocess
+from backend import db, postprocess, routes_profile
 
 app = FastAPI(title="Pride and Prejudice Voice Agent")
+app.include_router(routes_profile.router)
 
 
 @app.on_event("startup")
@@ -107,7 +112,15 @@ async def health():
     return {"status": "ok"}
 
 
-# Serve the orb UI. Mounted last so /api/* routes above take precedence.
+@app.get("/profile")
+async def profile_page():
+    """Serves the dashboard page at a clean URL (no .html extension).
+    Registered before the StaticFiles mount below so it takes precedence."""
+    return FileResponse(FRONTEND_DIR / "profile.html")
+
+
+# Serve the orb UI (and profile.html/css/js as static assets). Mounted last
+# so /api/* and /profile above take precedence.
 app.mount("/", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")
 
 

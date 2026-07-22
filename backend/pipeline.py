@@ -49,6 +49,7 @@ from pipecat.processors.aggregators.llm_context import LLMContext
 from pipecat.processors.aggregators.llm_response_universal import LLMContextAggregatorPair
 from pipecat.processors.frame_processor import FrameDirection, FrameProcessor
 from pipecat.services.cartesia.tts import CartesiaTTSService
+from pipecat.services.deepgram.tts import DeepgramTTSService
 from pipecat.services.deepgram.stt import DeepgramSTTService
 from pipecat.services.groq.llm import GroqLLMService
 from pipecat.transports.base_transport import TransportParams
@@ -257,10 +258,18 @@ def build_pipeline(webrtc_connection) -> tuple[PipelineTask, PipelineRunner, int
         settings=DeepgramSTTService.Settings(model=settings.deepgram_model, smart_format=True),
     )
 
-    tts = CartesiaTTSService(
-        api_key=settings.cartesia_api_key,
-        settings=CartesiaTTSService.Settings(voice=settings.cartesia_voice_id, model=settings.cartesia_model),
-    )
+    if settings.tts_provider == "deepgram":
+        logger.info(f"[pipeline] TTS provider: Deepgram Aura-2 ({settings.deepgram_tts_model})")
+        tts = DeepgramTTSService(
+            api_key=settings.deepgram_api_key,  # same key as STT above — no separate signup
+            settings=DeepgramTTSService.Settings(model=settings.deepgram_tts_model),
+        )
+    else:
+        logger.info("[pipeline] TTS provider: Cartesia")
+        tts = CartesiaTTSService(
+            api_key=settings.cartesia_api_key,
+            settings=CartesiaTTSService.Settings(voice=settings.cartesia_voice_id, model=settings.cartesia_model),
+        )
 
     llm = GroqLLMService(
         api_key=settings.groq_api_key,

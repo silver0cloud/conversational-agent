@@ -28,10 +28,19 @@ class Settings:
     deepgram_model: str = "nova-3"
 
     # --- TTS ---
+    # "cartesia" or "deepgram" — switchable via .env, no code changes needed.
+    # Deepgram TTS (Aura-2) reuses the same DEEPGRAM_API_KEY as STT above —
+    # no separate signup required.
+    tts_provider: str = os.getenv("TTS_PROVIDER", "cartesia")
+
     cartesia_api_key: str = os.getenv("CARTESIA_API_KEY", "")
     cartesia_model: str = "sonic-2"
     # Default Cartesia voice id (British female, "Helpful Woman"). Swap freely.
     cartesia_voice_id: str = os.getenv("CARTESIA_VOICE_ID", "79a125e8-cd45-4c13-8a67-188112f4dd22")
+
+    # Deepgram Aura-2 model = voice, in one string: "aura-2-<voicename>-en".
+    # Browse voices at https://developers.deepgram.com/docs/tts-models
+    deepgram_tts_model: str = os.getenv("DEEPGRAM_TTS_MODEL", "aura-2-thalia-en")
 
     # --- LLM (Groq) ---
     groq_api_key: str = os.getenv("GROQ_API_KEY", "")
@@ -69,15 +78,14 @@ class Settings:
 
     def validate_runtime_keys(self) -> None:
         """Call this before starting the live pipeline (not needed for ingestion)."""
-        missing = [
-            name
-            for name, val in [
-                ("DEEPGRAM_API_KEY", self.deepgram_api_key),
-                ("CARTESIA_API_KEY", self.cartesia_api_key),
-                ("GROQ_API_KEY", self.groq_api_key),
-            ]
-            if not val
+        required = [
+            ("DEEPGRAM_API_KEY", self.deepgram_api_key),
+            ("GROQ_API_KEY", self.groq_api_key),
         ]
+        if self.tts_provider == "cartesia":
+            required.append(("CARTESIA_API_KEY", self.cartesia_api_key))
+
+        missing = [name for name, val in required if not val]
         if missing:
             raise RuntimeError(f"Missing required API keys in .env: {', '.join(missing)}")
 
